@@ -3,26 +3,29 @@ package ruid
 import (
 	"net/http"
 
+	"github.com/egoholic/router"
+
+	"github.com/egoholic/router/params"
 	"github.com/egoholic/ruid/uid"
 )
 
 type handler struct {
-	label    string
+	prefixes []string
 	original http.Handler
 }
 
 func (h *handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	r.Header.Add("RUID", uid.New(h.label))
+	r.Header.Add("X-RUID", uid.New(h.prefixes))
 	h.original.ServeHTTP(w, r)
 }
 
-func WrapHandlerWithRUID(label string, original http.Handler) http.Handler {
-	return &handler{label, original}
+func WrapHandlerWithRUID(prefixes []string, original http.Handler) http.Handler {
+	return &handler{prefixes, original}
 }
 
-func WrapHandlerFnWithRUID(label string, original http.HandlerFunc) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		r.Header.Add("RUID", uid.New(label))
+func WrapHandlerFnWithRUID(prefixes []string, original http.HandlerFunc) router.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request, p *params.Params) {
+		r.Header.Add("X-RUID", uid.New(prefixes))
 		original(w, r)
 	}
 }

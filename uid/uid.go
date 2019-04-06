@@ -17,10 +17,14 @@ func init() {
 var chars = []rune{'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'}
 var length = len(chars)
 
-func New(label string) string {
+// replace with list of prefixes
+func New(prefixes []string) string {
 	uuid := &strings.Builder{}
-	uuid.WriteString(label)
-	uuid.WriteRune('-')
+	for _, prefix := range prefixes {
+		uuid.WriteString(prefix)
+		uuid.WriteRune('-')
+	}
+
 	uuid.WriteString(strconv.Itoa(int(time.Now().Unix())))
 	uuid.WriteRune('-')
 
